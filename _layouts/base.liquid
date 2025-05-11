@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    {% if description %}
+    <meta name="description" content="{{ description }}">
+    {% endif %}
+</head>
+<body id="{{ pageId | default: 'page-default' }}">
+    <div id="wrapper">
+
+        <main id="main-content-area" class="content-frame">
+            <div id="main-content-inner" class="content-frame-inner">
+                {% include "main-nav.liquid" %}
+
+                {{ content }}
+            </div>
+        </main>
+
+        <aside id="sidebar-column-container">
+            {% include "site-header-block.liquid" %}
+            {% include "sidebar-widgets.liquid" %}
+        </aside>
+
+    </div>
+    <footer id="page-footer">
+        </footer>
+    <script src="/js/script.js" defer></script>
+</body>
+</html>

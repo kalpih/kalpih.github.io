@@ -1,0 +1,8 @@
+<nav id="main-nav">
+    <ul class="menu">
+        <li {% if page.url == "/" %}class="current-menu-item"{% endif %}><a href="/">Bio</a></li>
+        <li {% if page.url == "/articles/" %}class="current-menu-item"{% endif %}><a href="/articles/">Articles</a></li>
+        <li {% if page.url == "/books/" %}class="current-menu-item"{% endif %}><a href="/books/">Books and journal issues</a></li>
+        <li {% if page.url == "/projects/" %}class="current-menu-item"{% endif %}><a href="/projects/">Projects</a></li>
+    </ul>
+</nav>
