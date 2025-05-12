@@ -1,4 +1,3 @@
-/* Main Site Fonts: Lato for body, Montserrat for UI/default headings, Oswald for Page Titles */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;600;700&family=Oswald:wght@400;500&display=swap');
 
 :root {
@@ -15,17 +14,17 @@
   --text-on-primary-muted: #eee;
   --bg-page: #eee;
   --bg-content: #fff;
-  --bg-wrapper: #ccc; /* Hover button bg */
+  --bg-wrapper: #ccc; /* Also used for Hover button bg */
   --bg-secondary-entry: #f5f5f5; /* Active button bg & Secondary Entry background */
   --bg-filter-button: #eee;
-  --bg-filter-button-hover: #ddd; /* Used for filter button hover */
-  --bg-collapsible-default: #E9E9E9; /* For default collapsible background */
+  --bg-filter-button-hover: #ddd;
+  --bg-collapsible-default: #E9E9E9;
   --bg-expand-hover: #f0f0f0;
   --bg-details-box: #fff;
   --bg-year-overlay-start: rgba(42, 68, 102, 0.8);
   --bg-year-overlay-end: rgba(42, 68, 102, 0);
   --border-color: #eee;
-  --border-color-light: #ddd; /* Button border */
+  --border-color-light: #ddd; /* General button border */
   --border-secondary-entry: #eee;
   --border-details-box: #eee;
   --wrapper-bg-image: none;
@@ -47,11 +46,10 @@
   --main-gap: 2.14rem;
   --sidebar-gap: 1.43rem;
   
-  /* Article List Spacing Variables */
   --first-article-top-margin: 0.5em;  
   --inter-article-top-margin: 0.5em;   
   
-  --inter-section-margin: 0.7rem; 
+  --inter-section-margin: 0.7rem;  
   
   --secondary-entry-padding-left: 2.6em;
   --secondary-entry-margin-left: -0.4em; 
@@ -63,12 +61,14 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 html {
     line-height: var(--base-line-height);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    overflow-y: scroll;
+    overflow-y: scroll; /* Always show scrollbar to prevent layout shift */
 }
+
 body {
   font-family: var(--font-family-base);
   font-size: var(--base-font-size);
@@ -77,6 +77,7 @@ body {
   background-color: var(--bg-page);
   color: var(--text-color);
 }
+
 ul { list-style: none; }
 img, picture, video, canvas, svg { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; }
@@ -142,9 +143,7 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
 @media (max-width: 480px) {
   .book-cover-grid { grid-template-columns: repeat(2, 80px); }
   .year-overlay { font-size: 0.8em; padding: 0.15em 0.3em;}
-  #page-books .image-collapsible-content { margin-left: 0.71rem; }
-  #page-books .book-entry .short_resume_content { margin-left: 0.71rem; }
-}
+} /* <<< CORRECTED: Added closing brace */
 
 #site-title-block {
   background: var(--primary-color); color: var(--text-on-primary);
@@ -383,7 +382,7 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
     margin-bottom: 0.5em;
 }
 
-.entry > h4 { /* Default h4 styling in entry */
+.entry > h4 {
     font-family: var(--font-family-ui-headings);
     padding-left: 0.71rem;
     padding-right: 0.71rem;
@@ -407,7 +406,6 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
 .page-header-container + .entry > .section-group-header:first-child {
     margin-top: 0;
 }
-
 .book-type-filter-controls + .entry > h3:first-child { margin-top: 0; }
 
 .post > .page-title + .entry > h3:first-child { margin-top: 0; }
@@ -430,11 +428,9 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
   border-top: none; padding: 1.4em 1.4em;
   border-radius: 0 0 var(--border-radius-details-box) var(--border-radius-details-box);
 }
-.static-box-content p { margin-bottom: 0.5em; } /* General rule for p in static-box-content */
+.static-box-content p { margin-bottom: 0.5em; }
 .static-box-content p:last-child { margin-bottom: 0; }
 .static-box-content ul { margin: 0; } 
-
-}
 .static-box-content li { margin-bottom: 0.5em; } 
 .static-box-content li:last-child { margin-bottom: 0; } 
 
@@ -538,7 +534,16 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
 .institution { font-size: 0.95em; color: var(--text-light); font-weight: 400; }
 #page-bio .short_resume_content { margin-top: 0; font-size: 0.95em; padding-left: 0; padding-right: 0; }
 
-.expand-collapse-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-end; line-height: 1.2; }
+/* --- BUTTONS IN PAGE HEADER (Expand/Collapse, Show/Hide Covers) --- */
+.expand-collapse-controls {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center; 
+    justify-content: flex-end; 
+    line-height: 1.2;
+}
+
+/* General style for buttons within this specific container */
 .expand-collapse-controls button {
   font-family: var(--font-family-ui-headings);
   background: none; color: var(--text-muted); border: 1px solid transparent;
@@ -546,11 +551,26 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
   border-radius: var(--border-radius-button);
   cursor: pointer; font-size: 0.9em; text-decoration: none; line-height: 1.2;
   transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  /* Individual margins will be set by ID for ordering */
 }
-.expand-collapse-controls button:hover {
+
+#toggle-all-covers-btn {
+    order: -1; /* Visually places it first */
+    margin-right: 0.8em; /* Space between this and the next button */
+}
+
+#toggle-all-details-btn {
+    order: 0; /* Default order, will come after elements with order: -1 */
+    /* No explicit left margin needed due to margin-right on the covers button */
+}
+
+.expand-collapse-controls button:hover,
+.expand-collapse-controls button:focus {
   background-color: var(--bg-expand-hover); color: var(--primary-darker);
   box-shadow: inset 0 0 0 1px var(--primary-darker); text-decoration: none;
 }
+/* --- END OF BUTTONS IN PAGE HEADER --- */
+
 .entry > .expand-collapse-controls { margin: 1rem 0 1.5rem 0; padding-left: 0.71rem; padding-right: 0.71rem; padding-top: 0.5rem; }
 
 button.collapsible {
@@ -591,7 +611,7 @@ button.collapsible:hover, button.collapsible:focus {
 
 button.collapsible.active {
   background-color: var(--bg-secondary-entry); 
-  color: var(--text-light);          
+  color: var(--text-light);       
   border-color: var(--border-color-light); 
 }
 
@@ -606,7 +626,6 @@ button.collapsible:hover::after, button.collapsible:focus::after {
 }
 button.collapsible.active::after {
   transform: translateY(-50%) rotate(90deg);
-  content: "▶";
   color: var(--text-light); 
 }
 
@@ -660,17 +679,13 @@ button.collapsible.project-button::after {
     padding-left: 0;
     padding-right: 0.71rem;
     padding-bottom: 0em;
-    /* padding-top is now effectively handled by margin-top and the 0 padding-top of .collapsible-content */
 }
-
 
 #page-projects .collapsible-content .project-details p {
-    /* Default paragraph margin is 1em from .entry p. */
-    /* HTML change to use <br> between Funding/Role handles their spacing. */
-    /* Other p tags (like descriptions) will get default .entry p margin. */
+    /* Default paragraph margin is 1em. */
 }
 #page-projects .collapsible-content .project-details p:last-child {
-    /* Default is margin-bottom: 1em. Override if needed for tighter spacing at end of content */
+    /* Adjust if needed */
 }
 #page-projects .collapsible-content .project-details strong {
     font-weight: 600; 
@@ -694,8 +709,8 @@ button.collapsible.project-button::after {
   border-left: 2px solid var(--bg-secondary-entry); 
 }
 #page-bio .collapsible-content.sub-content {
-    margin-left: -1rem;       
-    border-left: none;        
+    margin-left: -1rem;      
+    border-left: none;      
 }
 
 .entry > .book-entry, .journal-issues-list > .book-entry {
@@ -777,8 +792,6 @@ button.collapsible.project-button::after {
     letter-spacing: normal;
     pointer-events: none;
 }
-.book-cover-placeholder a .year-overlay { display: none; }
-.book-reference-text em { font-style: italic; }
 
 .book-details-box.collapsible-content {
   background-color: var(--bg-details-box);
@@ -792,6 +805,7 @@ button.collapsible.project-button::after {
   border-top: none;
   border-right: 1px solid var(--border-details-box);
   border-bottom: 1px solid var(--border-details-box);
+  border-left: 1px solid var(--border-details-box);
   border-radius: 0 0 var(--border-radius-details-box) var(--border-radius-details-box);
   font-size: var(--base-font-size);
   line-height: var(--base-line-height);
@@ -840,11 +854,6 @@ button.collapsible.project-button::after {
     font-style: normal;
 }
 .book-details-box.collapsible-content em { font-style: italic; }
-
-
-.entry em, .entry i { font-style: italic; } 
-.entry a { text-decoration: none; }
-.entry a:hover, .entry a:focus { text-decoration: none; color: var(--secondary-color); }
 
 .language-filter-controls button,
 .status-filter-controls button,
@@ -994,11 +1003,7 @@ a.related-link:focus {
     box-shadow: 0 0 3px rgba(0,0,0,0.1);
 }
 
-#page-articles .entry li:not(.secondary-entry).highlighted-article {
-    background-color: #FFEE99; 
-    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
-}
+#page-articles .entry li:not(.secondary-entry).highlighted-article,
 #page-articles .entry li.secondary-entry.highlighted-article {
     background-color: #FFEE99; 
     transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
@@ -1006,58 +1011,54 @@ a.related-link:focus {
 }
 
 /* --- Projects Page Specific Styling --- */
-/* Styling for the title area of the 'Ongoing project' */
 #page-projects .ongoing-project-entry h4 {
-    font-family: var(--font-family-ui-headings); /* Explicitly Montserrat */
-    font-size: 1.2em;   /* Slightly larger than default h4, for emphasis */
-    font-weight: 500;   /* Consistent with other UI headings */
-    color: var(--primary-darker); /* Use the darker primary blue */
+    font-family: var(--font-family-ui-headings);
+    font-size: 1.2em;   
+    font-weight: 500;   
+    color: var(--primary-darker);
     line-height: 1.3;
     margin-top: 0;
-    margin-bottom: 0.2em; /* Make it closer to the institution line */
+    margin-bottom: 0.2em;
 }
 
-#page-projects .ongoing-project-entry h4 + p { /* Targets the 'Yerevan University...' line */
-    margin-top: 0; /* Ensure it's snug against the h4 */
-    margin-bottom: 1em; /* Provides space before the 'Funding:' details etc. */
+#page-projects .ongoing-project-entry h4 + p {
+    margin-top: 0;
+    margin-bottom: 1em;
     font-size: 0.95em;
     color: var(--text-muted);
 }
 
-/* Styling for the conference line font size */
-#page-projects .ongoing-project-entry .conference-info { /* MODIFIED: Merged with new styles */
-    font-size: 0.95em; /* Match Yerevan uni line font size */
-    margin-bottom: 0.5em; /* Space between the title/date and the description block */
+#page-projects .ongoing-project-entry .conference-info {
+    font-size: 0.95em;
+    margin-bottom: 0.5em;
     line-height: var(--base-line-height);
 }
 
-/* ADDED: New styles for conference announcement in Ongoing Projects */
 #page-projects .ongoing-project-entry .conference-announcement {
-    margin-top: 1.5em; /* Adds some space above the conference block */
+    margin-top: 1.5em;
 }
 
 #page-projects .ongoing-project-entry .conference-info a {
-    font-weight: 500; /* Makes the conference title link slightly bolder */
+    font-weight: 500;
 }
 
-#page-projects .ongoing-project-entry .conference-info em { /* Styles the date and location line */
-    font-style: normal; /* Removes italics if not desired, or use font-style: italic; */
-    font-size: 0.9em;   /* Makes the date/location line slightly smaller */
+#page-projects .ongoing-project-entry .conference-info em {
+    font-style: normal; 
+    font-size: 0.9em;   
     color: var(--text-muted);
-    display: block;     /* Ensures it takes its own line if not already due to <br> */
-    margin-top: 0.2em;  /* Small space below the title link */
+    display: block;   
+    margin-top: 0.2em; 
 }
 
-/* Styles for the conference description and the dividing line */
 #page-projects .ongoing-project-entry .conference-description {
-    padding-top: 1em;  /* Space between the dividing line and the description text */
-    margin-top: 1em;   /* Space between the conference title/date block and the dividing line */
-    border-top: 1px solid var(--border-color-light); /* This creates the dividing line */
-    font-size: 0.95em; /* Consistent font size with other project details */
+    padding-top: 1em; 
+    margin-top: 1em;   
+    border-top: 1px solid var(--border-color-light);
+    font-size: 0.95em;
     line-height: var(--base-line-height);
 }
 
 #page-projects .ongoing-project-entry .conference-description p {
-    margin-bottom: 0; /* Ensures the paragraph inside the description doesn't add extra bottom margin */
+    margin-bottom: 0;
 }
 /* --- End of Projects Page Specific Styling --- */
