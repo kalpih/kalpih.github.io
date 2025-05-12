@@ -20,7 +20,7 @@ module.exports = function(eleventyConfig) {
       input: ".",          // Root folder for source files (current directory).
       includes: "_includes", // Folder for reusable HTML partials.
       layouts: "_layouts",   // Folder for HTML page layouts.
-      output: "_site"      // Folder where the generated static site will go.
+      output: "docs"      // Folder where the generated static site will go.
     }
   };
 };
