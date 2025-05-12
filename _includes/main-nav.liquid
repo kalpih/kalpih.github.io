@@ -1,8 +1,8 @@
 <nav id="main-nav">
     <ul class="menu">
-        <li {% if page.url == "/" %}class="current-menu-item"{% endif %}><a href="/">Bio</a></li>
-        <li {% if page.url == "/articles/" %}class="current-menu-item"{% endif %}><a href="/articles/">Articles</a></li>
-        <li {% if page.url == "/books/" %}class="current-menu-item"{% endif %}><a href="/books/">Books and journal issues</a></li>
-        <li {% if page.url == "/projects/" %}class="current-menu-item"{% endif %}><a href="/projects/">Projects</a></li>
+        <li {% assign home_url = '/' | url %}{% if page.url == home_url %}class="current-menu-item"{% endif %}><a href="{{ '/' | url }}">Bio</a></li>
+        <li {% assign articles_url = '/articles/' | url %}{% if page.url == articles_url %}class="current-menu-item"{% endif %}><a href="{{ '/articles/' | url }}">Articles</a></li>
+        <li {% assign books_url = '/books/' | url %}{% if page.url == books_url %}class="current-menu-item"{% endif %}><a href="{{ '/books/' | url }}">Books and journal issues</a></li>
+        <li {% assign projects_url = '/projects/' | url %}{% if page.url == projects_url %}class="current-menu-item"{% endif %}><a href="{{ '/projects/' | url }}">Projects</a></li>
     </ul>
 </nav>

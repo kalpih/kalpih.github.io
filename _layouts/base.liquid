@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>{{ title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}">  {# <--- MODIFIED #}
     {% if description %}
     <meta name="description" content="{{ description }}">
     {% endif %}
@@ -27,7 +27,7 @@
 
     </div>
     <footer id="page-footer">
-        </footer>
-    <script src="/js/script.js" defer></script>
+    </footer>
+    <script src="{{ '/js/script.js' | url }}" defer></script> {# <--- MODIFIED #}
 </body>
 </html>
