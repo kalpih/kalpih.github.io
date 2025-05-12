@@ -187,26 +187,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function handleRelatedLinkClick(e) { 
              if (e.target.matches('a.related-link')) { 
-                e.preventDefault(); 
-                const targetId = e.target.getAttribute('href').substring(1); 
-                const targetElement = document.getElementById(targetId); 
-                if (targetElement) {
-                    const actionAfterFilters = () => {
-                        const collapsibleContentParent = targetElement.closest('.collapsible-content');
-                        if (collapsibleContentParent && collapsibleContentParent.style.display === 'none') {
-                            const buttonId = collapsibleContentParent.getAttribute('aria-labelledby');
-                            const yearToggleButton = document.getElementById(buttonId);
-                            if (yearToggleButton && !yearToggleButton.classList.contains('active')) {
-                                yearToggleButton.click(); 
-                                setTimeout(() => { defaultScrollHighlight(targetElement); }, 150); 
-                                return; 
-                            }
-                        }
-                        defaultScrollHighlight(targetElement); 
-                    };
-                    resetFiltersIfNeeded(actionAfterFilters);
-                }
-            }
+                 e.preventDefault(); 
+                 const targetId = e.target.getAttribute('href').substring(1); 
+                 const targetElement = document.getElementById(targetId); 
+                 if (targetElement) {
+                     const actionAfterFilters = () => {
+                         const collapsibleContentParent = targetElement.closest('.collapsible-content');
+                         if (collapsibleContentParent && collapsibleContentParent.style.display === 'none') {
+                             const buttonId = collapsibleContentParent.getAttribute('aria-labelledby');
+                             const yearToggleButton = document.getElementById(buttonId);
+                             if (yearToggleButton && !yearToggleButton.classList.contains('active')) {
+                                 yearToggleButton.click(); 
+                                 setTimeout(() => { defaultScrollHighlight(targetElement); }, 150); 
+                                 return; 
+                             }
+                         }
+                         defaultScrollHighlight(targetElement); 
+                     };
+                     resetFiltersIfNeeded(actionAfterFilters);
+                 }
+             }
         }
         
         function renumberVisibleArticles() { 
@@ -221,8 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
                  if (toggleAllArticlesBtn) { updateToggleAllButtonText(toggleAllArticlesBtn, []); } 
                  renumberVisibleArticles(); injectRelatedArticleLinks(); return; 
             } else if (potentialItems.length === 0) { 
-                renumberVisibleArticles(); injectRelatedArticleLinks(); 
-                if (toggleAllArticlesBtn) { updateToggleAllButtonText(toggleAllArticlesBtn, []); } return; 
+                 renumberVisibleArticles(); injectRelatedArticleLinks(); 
+                 if (toggleAllArticlesBtn) { updateToggleAllButtonText(toggleAllArticlesBtn, []); } return; 
             }
 
             potentialItems.forEach(item => {
@@ -350,7 +350,36 @@ document.addEventListener('DOMContentLoaded', function () {
         function filterBooksByType() { if (allBookEntries.length === 0) return; allBookEntries.forEach(entry => { const entryType = entry.dataset.bookType; const typeMatch = (currentBookTypeFilter === 'all' || entryType === currentBookTypeFilter); entry.style.display = typeMatch ? '' : 'none'; }); numberVisibleBookEntries(); updateBooksPageToggleAllButtonText(); }
         detailsCollapsibleBtns.forEach(setupCollapsible); imageContainers.forEach(container => { container.style.display = 'none'; });
         function updateBooksPageToggleAllButtonText() { if (!toggleAllBooksBtn) return; const visibleBookEntries = allBookEntries.filter(entry => entry.style.display !== 'none'); const allRelevantCollapsibles = []; visibleBookEntries.forEach(entry => { allRelevantCollapsibles.push(...Array.from(entry.querySelectorAll('.short_resume_content > button.collapsible'))); }); const relevantImageContainers = imageContainers.filter(container => { const parentEntry = container.closest('.book-entry'); return parentEntry && parentEntry.style.display !== 'none'; }); const anyImageHidden = relevantImageContainers.some(container => container.style.display === 'none'); const anyDetailCollapsed = allRelevantCollapsibles.some(btn => !btn.classList.contains('active')); if (relevantImageContainers.length === 0 && allRelevantCollapsibles.length === 0) { toggleAllBooksBtn.textContent = 'Expand all'; return; } toggleAllBooksBtn.style.display = ''; if (anyImageHidden || anyDetailCollapsed) { toggleAllBooksBtn.textContent = 'Expand all'; } else { toggleAllBooksBtn.textContent = 'Collapse all'; } } updateBooksPageToggleAllButtonText();
-        if (toggleAllBooksBtn) { toggleAllBooksBtn.addEventListener('click', () => { const visibleBookEntries = allBookEntries.filter(entry => entry.style.display !== 'none'); const relevantImageContainers = imageContainers.filter(container => { const parentEntry = container.closest('.book-entry'); return parentEntry && parentEntry.style.display !== 'none'; }); const relevantDetailsCollapsibleBtns = detailsCollapsibleBtns.filter(btn => { const parentEntry = btn.closest('.book-entry'); return parentEntry && parentEntry.style.display !== 'none'; }); const anyImageHidden = relevantImageContainers.some(container => container.style.display === 'none'); const anyDetailCollapsed = relevantDetailsCollapsibleBtns.some(btn => !btn.classList.contains('active')); const shouldExpand = anyImageHidden || anyDetailCollapsed; relevantImageContainers.forEach(container => { container.style.display = shouldExpand ? 'block' : 'none'; }); relevantDetailsCollapsibles.forEach(btn => { const isCurrentlyExpanded = btn.classList.contains('active'); if ((shouldExpand && !isCurrentlyExpanded) || (!shouldExpand && isCurrentlyExpanded)) { btn.click(); } }); updateBooksPageToggleAllButtonText(); }); }
+        if (toggleAllBooksBtn) {
+            toggleAllBooksBtn.addEventListener('click', () => {
+                const visibleBookEntries = allBookEntries.filter(entry => entry.style.display !== 'none');
+                const relevantImageContainers = imageContainers.filter(container => {
+                    const parentEntry = container.closest('.book-entry');
+                    return parentEntry && parentEntry.style.display !== 'none';
+                });
+                const relevantDetailsCollapsibleBtns = detailsCollapsibleBtns.filter(btn => { // Defined correctly
+                    const parentEntry = btn.closest('.book-entry');
+                    return parentEntry && parentEntry.style.display !== 'none';
+                });
+
+                const anyImageHidden = relevantImageContainers.some(container => container.style.display === 'none');
+                const anyDetailCollapsed = relevantDetailsCollapsibleBtns.some(btn => !btn.classList.contains('active'));
+                const shouldExpand = anyImageHidden || anyDetailCollapsed;
+
+                relevantImageContainers.forEach(container => {
+                    container.style.display = shouldExpand ? 'block' : 'none';
+                });
+
+                // --- CORRECTED LINE HERE ---
+                relevantDetailsCollapsibleBtns.forEach(btn => {
+                    const isCurrentlyExpanded = btn.classList.contains('active');
+                    if ((shouldExpand && !isCurrentlyExpanded) || (!shouldExpand && isCurrentlyExpanded)) {
+                        btn.click(); 
+                    }
+                });
+                updateBooksPageToggleAllButtonText();
+            });
+        }
         pageElement.querySelectorAll('.book-cover-placeholder img').forEach(img => { img.onerror = function() { const errorText = document.createElement('span'); errorText.className = 'error-text'; errorText.textContent = 'Cover not available'; if (this.parentElement && !this.parentElement.querySelector('.error-text')) { this.parentElement.appendChild(errorText); this.style.display='none'; } }; if (img.complete && !img.naturalWidth && img.src) { img.onerror(); } });
         if (filterButtons.length > 0) { filterButtons.forEach(button => { button.addEventListener('click', function() { currentBookTypeFilter = this.dataset.filterType; filterButtons.forEach(btn => btn.classList.remove('active-filter')); this.classList.add('active-filter'); this.blur(); filterBooksByType(); }); }); } filterBooksByType();
     }
