@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // --- Reusable Collapsible Function ---
-    function setupCollapsible(button) {
+    // MODIFIED: Added optional postToggleCallback
+    function setupCollapsible(button, postToggleCallback) {
         const contentId = button.getAttribute('aria-controls');
         const content = document.getElementById(contentId);
 
@@ -20,6 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.classList.toggle('followed-by-details-box', isExpanded);
                 }
                 this.blur();
+
+                // Call the post-toggle callback if provided
+                if (postToggleCallback) {
+                    postToggleCallback();
+                }
             });
 
             if (isInitiallyExpanded && button.classList.contains('collapsible') && button.nextElementSibling && button.nextElementSibling.classList.contains('book-details-box')) {
@@ -30,32 +36,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Reusable Update Toggle All Button Text Function ---
     // This is your original generic one, used by other pages.
-    // The Books page now has more specific update functions within its own setup logic.
     function updateToggleAllButtonText(toggleButton, collapsibleButtons) {
         if (!toggleButton) return;
         const visibleControllableButtons = collapsibleButtons.filter(btn => {
             const parentSection = btn.closest('section');
-            const parentEntry = btn.closest('.book-entry'); // Added for book entries as well
+            const parentEntry = btn.closest('.book-entry'); 
             const parentContainer = parentSection || parentEntry;
             return !parentContainer || parentContainer.style.display !== 'none';
         });
 
         if (visibleControllableButtons.length === 0) {
-            // toggleButton.textContent = 'Expand all'; // Original
-            // For safety, if no controllable buttons, let's set a default or hide
-            // Consider what text makes sense if there's nothing to control, or disable the button
-             toggleButton.textContent = 'Expand'; // Or 'Expand All' if that's a general fallback.
-             // toggleButton.style.display = 'none'; // Or hide it
+             toggleButton.textContent = 'Expand all'; // Or 'Expand' if preferred for generic
+             toggleButton.style.display = 'none'; // Often good to hide if nothing to control
             return;
         }
-        toggleButton.style.display = ''; // Ensure it's visible
+        toggleButton.style.display = ''; 
         let allExpanded = true;
         visibleControllableButtons.forEach(btn => { if (!btn.classList.contains('active')) { allExpanded = false; } });
-        // toggleButton.textContent = allExpanded ? 'Collapse all' : 'Expand all'; // Original
-        // Adjusted based on your request for just "Expand" / "Collapse" for the general button
-        // However, the Books page will use its own more specific text updaters.
-        // This generic one might need adjustment if used elsewhere with the "Expand"/"Collapse" requirement.
-        // For now, keeping its original text logic as it might be used by Bio/Projects.
         toggleButton.textContent = allExpanded ? 'Collapse all' : 'Expand all';
     }
 
@@ -63,11 +60,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // This is your original generic one.
     function setupToggleAllButton(toggleButton, collapsibleButtons) {
         if (toggleButton && collapsibleButtons && collapsibleButtons.length > 0) {
-            updateToggleAllButtonText(toggleButton, collapsibleButtons); // Uses the generic updater
+            updateToggleAllButtonText(toggleButton, collapsibleButtons); 
             toggleButton.addEventListener('click', () => {
-                // Original logic used "expand all". If this button is now "Expand", this needs adjustment.
-                // For now, assuming its text is "Expand all" / "Collapse all" as per updateToggleAllButtonText
-                const shouldExpand = toggleButton.textContent.toLowerCase().startsWith('expand'); // Make it more flexible
+                const shouldExpand = toggleButton.textContent.toLowerCase().startsWith('expand'); 
                 const visibleControllableButtons = collapsibleButtons.filter(btn => {
                     const parentSection = btn.closest('section');
                     const parentEntry = btn.closest('.book-entry');
@@ -81,17 +76,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 updateToggleAllButtonText(toggleButton, visibleControllableButtons);
             });
-        } else { if (toggleButton) { updateToggleAllButtonText(toggleButton, []); } } // Pass empty array
+        } else { if (toggleButton) { updateToggleAllButtonText(toggleButton, []); } } 
     }
 
     // --- Setup for Index Page (Bio) ---
     function setupIndexPageLogic() {
         const pageElement = document.getElementById('page-bio');
         if (!pageElement) return;
-        const toggleAllBioBtn = pageElement.querySelector('#toggle-all'); // Assumes this ID on Bio page
+        const toggleAllBioBtn = pageElement.querySelector('#toggle-all'); 
         const pageCollapsibles = Array.from(pageElement.querySelectorAll('.entry .collapsible'));
-        pageCollapsibles.forEach(setupCollapsible);
-        if (toggleAllBioBtn) { // Use Array.from for NodeList if not already an array
+        // MODIFIED: Pass undefined or no callback for generic setup
+        pageCollapsibles.forEach(btn => setupCollapsible(btn)); 
+        if (toggleAllBioBtn) { 
             setupToggleAllButton(toggleAllBioBtn, Array.from(pageCollapsibles));
         }
     }
@@ -102,12 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!pageElement) return;
 
         const yearSectionCollapsibles = Array.from(pageElement.querySelectorAll('.entry > section > .collapsible'));
-        const toggleAllArticlesBtn = pageElement.querySelector('#toggle-all'); // Assumes this ID on Articles page
+        const toggleAllArticlesBtn = pageElement.querySelector('#toggle-all'); 
+        // ... (rest of your Articles page variables) ...
         const langFilterButtons = pageElement.querySelectorAll('.language-filter-controls button[data-filter-lang]');
         const statusFilterButtons = pageElement.querySelectorAll('.status-filter-controls button[data-filter-status]');
         const allArticleItemsContainer = pageElement.querySelector('.entry');
         const potentialItems = allArticleItemsContainer ? Array.from(allArticleItemsContainer.querySelectorAll('li[data-lang][data-status]')) : [];
-
         const articleLookup = new Map();
         const articleGroups = new Map();
         let currentLangFilter = 'all';
@@ -316,7 +312,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
-        yearSectionCollapsibles.forEach(setupCollapsible);
+        // MODIFIED: Pass undefined or no callback
+        yearSectionCollapsibles.forEach(btn => setupCollapsible(btn)); 
         if (toggleAllArticlesBtn) { setupToggleAllButton(toggleAllArticlesBtn, yearSectionCollapsibles); }
 
         if (allArticleItemsContainer) {
@@ -351,25 +348,20 @@ document.addEventListener('DOMContentLoaded', function () {
         filterAndToggleYearSections();
     } // --- End of setupArticlesPageLogic ---
 
-    // =====================================================================================
-    // START OF NEW/MODIFIED setupBooksPageLogic
-    // =====================================================================================
     function setupBooksPageLogic() {
         const pageElement = document.getElementById('page-books');
         if (!pageElement) return;
 
         const toggleCoversBtn = pageElement.querySelector('#toggle-covers-button');
-        const toggleDetailsBtn = pageElement.querySelector('#toggle-details-button'); // Changed ID
+        const toggleDetailsBtn = pageElement.querySelector('#toggle-details-button'); 
 
         const allBookEntries = Array.from(pageElement.querySelectorAll('.entry > .book-entry'));
         const imageContainers = Array.from(pageElement.querySelectorAll('.image-collapsible-content'));
-        // These are the individual buttons controlling review/translation sections
         const detailsCollapsibleBtns = Array.from(pageElement.querySelectorAll('.short_resume_content > button.collapsible'));
 
         const filterButtons = pageElement.querySelectorAll('.book-type-filter-controls button[data-filter-type]');
         let currentBookTypeFilter = 'all';
 
-        // Initial setup: Store original numbers for re-numbering if needed
         allBookEntries.forEach(entry => {
             const numberSpan = entry.querySelector('.book-reference-text .entry-number');
             if (numberSpan && numberSpan.textContent) {
@@ -382,12 +374,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Helper to get currently visible book entries
         function getVisibleBookEntries() {
             return allBookEntries.filter(entry => entry.style.display !== 'none');
         }
 
-        // Helper to get relevant image containers (those within visible book entries)
         function getRelevantImageContainers() {
             const visibleEntries = getVisibleBookEntries();
             return imageContainers.filter(container => {
@@ -396,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Helper to get relevant detail control buttons (those within visible book entries)
         function getRelevantDetailsCollapsibleBtns() {
             const visibleEntries = getVisibleBookEntries();
             return detailsCollapsibleBtns.filter(btn => {
@@ -405,18 +394,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // --- Covers Button Logic ---
-        let allCoversAreGloballyShown = false; // State for covers (false = hidden, true = shown)
+        let allCoversAreGloballyShown = false; 
 
         function updateToggleCoversButtonText() {
             if (!toggleCoversBtn) return;
             const relevantContainers = getRelevantImageContainers();
             if (relevantContainers.length === 0) {
-                toggleCoversBtn.textContent = 'Show Covers'; // Default if no relevant covers
-                // toggleCoversBtn.disabled = true; // Optionally disable if you prefer
+                toggleCoversBtn.textContent = 'Show Covers'; 
                 return;
             }
-            // toggleCoversBtn.disabled = false;
             const allCurrentlyShown = relevantContainers.every(container => container.style.display === 'block');
             allCoversAreGloballyShown = allCurrentlyShown; 
             toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
@@ -434,16 +420,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // --- Details Button Logic ---
         function updateToggleDetailsButtonText() {
             if (!toggleDetailsBtn) return;
             const relevantDetailBtns = getRelevantDetailsCollapsibleBtns();
             if (relevantDetailBtns.length === 0) {
-                toggleDetailsBtn.textContent = 'Expand'; // Default if no relevant details
-                // toggleDetailsBtn.disabled = true; // Optionally disable
+                toggleDetailsBtn.textContent = 'Expand'; 
                 return;
             }
-            // toggleDetailsBtn.disabled = false;
             const allDetailsExpanded = relevantDetailBtns.every(btn => btn.classList.contains('active'));
             toggleDetailsBtn.textContent = allDetailsExpanded ? 'Collapse' : 'Expand';
         }
@@ -488,7 +471,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const translationSpans = mainEntryData.element.querySelectorAll('.book-details-box[id^="target-translations-"] li .entry-number');
                 translationSpans.forEach(transSpan => {
-                     // Ensure parent entry of this translation span is visible
                     const parentBookEntry = transSpan.closest('.book-entry');
                     if (parentBookEntry && parentBookEntry.style.display !== 'none') {
                         const originalTransText = transSpan.dataset.originalNumber || "";
@@ -528,7 +510,10 @@ document.addEventListener('DOMContentLoaded', function () {
             updateToggleDetailsButtonText();
         }
 
-        detailsCollapsibleBtns.forEach(setupCollapsible); 
+        // MODIFIED: Pass the updateToggleDetailsButtonText as a callback for detail buttons
+        detailsCollapsibleBtns.forEach(btn => {
+            setupCollapsible(btn, updateToggleDetailsButtonText); 
+        });
 
         imageContainers.forEach(container => {
             container.style.display = 'none';
@@ -565,31 +550,27 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
         filterBooksByType(); 
-    } // --- End of setupBooksPageLogic ---
-    // =====================================================================================
-    // END OF NEW/MODIFIED setupBooksPageLogic
-    // =====================================================================================
+    } 
+    // --- End of setupBooksPageLogic ---
 
     // --- Setup for Projects Page ---
     function setupProjectsPageLogic() {
         const pageElement = document.getElementById('page-projects'); if (!pageElement) return;
-        const toggleAllProjectsBtn = pageElement.querySelector('#toggle-all-projects'); // Assumes this ID
+        const toggleAllProjectsBtn = pageElement.querySelector('#toggle-all-projects'); 
         const pageCollapsibles = Array.from(pageElement.querySelectorAll('.entry .collapsible'));
-        pageCollapsibles.forEach(setupCollapsible);
+        // MODIFIED: Pass undefined or no callback
+        pageCollapsibles.forEach(btn => setupCollapsible(btn)); 
         if (toggleAllProjectsBtn) {
             if (pageCollapsibles.length > 0) {
-                toggleAllProjectsBtn.style.display = ''; // Ensure it's visible if there are collapsibles
+                toggleAllProjectsBtn.style.display = ''; 
                 setupToggleAllButton(toggleAllProjectsBtn, pageCollapsibles);
             } else {
-                // updateToggleAllButtonText(toggleAllProjectsBtn, []); // Original line
-                // toggleAllProjectsBtn.style.display = 'none'; // Hide if no collapsibles, or set default text
-                // Safer:
                  if (typeof updateToggleAllButtonText === 'function') {
                     updateToggleAllButtonText(toggleAllProjectsBtn, []);
                  } else {
-                    toggleAllProjectsBtn.textContent = "Expand"; // Fallback
+                    toggleAllProjectsBtn.textContent = "Expand all"; // Fallback if generic updater wasn't found
                  }
-                 toggleAllProjectsBtn.style.display = pageCollapsibles.length > 0 ? '' : 'none';
+                 toggleAllProjectsBtn.style.display = 'none'; // Hide if no collapsibles
             }
         }
     }
@@ -599,10 +580,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (pageId === 'page-bio') { setupIndexPageLogic(); }
     else if (pageId === 'page-articles') { setupArticlesPageLogic(); }
-    else if (pageId === 'page-books') { setupBooksPageLogic(); } // THIS WILL CALL THE NEW FUNCTION
+    else if (pageId === 'page-books') { setupBooksPageLogic(); } 
     else if (pageId === 'page-projects') { setupProjectsPageLogic(); }
     else {
-        // Fallback for any other pages with .collapsible elements
-        document.querySelectorAll('.collapsible').forEach(setupCollapsible);
+        // MODIFIED: Pass undefined or no callback for generic fallback
+        document.querySelectorAll('.collapsible').forEach(btn => setupCollapsible(btn));
     }
 });
