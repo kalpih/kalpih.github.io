@@ -33,16 +33,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Reusable Update Toggle All Button Text Function ---
-    // MODIFIED: To implement "majority need" logic for text
     function updateToggleAllButtonText(toggleButton, collapsibleButtons) {
         if (!toggleButton) return;
 
-        // Filter for buttons that are part of currently visible sections/entries
         const visibleControllableButtons = collapsibleButtons.filter(btn => {
-            const parentSection = btn.closest('section'); // For Articles page structure
-            const parentEntry = btn.closest('.entry > div'); // For Bio/Projects (assuming collapsibles are in divs within .entry) or Books page structure
+            const parentSection = btn.closest('section');
+            const parentEntry = btn.closest('.entry > div');
             let parentContainer = parentSection || parentEntry;
-            // If no direct section or div parent, check the book-entry class if it's a book page detail
             if (!parentContainer && btn.closest('.book-entry')) {
                 parentContainer = btn.closest('.book-entry');
             }
@@ -50,32 +47,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         if (visibleControllableButtons.length === 0) {
-            toggleButton.textContent = 'Expand all'; // Default if no relevant items
-            toggleButton.style.display = 'none'; // Hide if nothing to control
+            toggleButton.textContent = 'Expand all';
+            toggleButton.style.display = 'none';
             return;
         }
-        toggleButton.style.display = ''; // Ensure button is visible
+        toggleButton.style.display = '';
 
         const numRelevant = visibleControllableButtons.length;
         const numExpanded = visibleControllableButtons.filter(btn => btn.classList.contains('active')).length;
 
         if (numExpanded > numRelevant / 2) {
-            // More than half are expanded
             toggleButton.textContent = 'Collapse all';
         } else {
-            // Half or fewer are expanded (majority are collapsed, or 50/50 split)
             toggleButton.textContent = 'Expand all';
         }
     }
 
     // --- Reusable Toggle All Collapsibles Function ---
-    // This function's core logic remains the same; it acts based on the button's current text
     function setupToggleAllButton(toggleButton, collapsibleButtons) {
         if (toggleButton && collapsibleButtons && collapsibleButtons.length > 0) {
-            updateToggleAllButtonText(toggleButton, collapsibleButtons); // Initial text set by new logic
+            updateToggleAllButtonText(toggleButton, collapsibleButtons);
             toggleButton.addEventListener('click', () => {
                 const shouldExpand = toggleButton.textContent.toLowerCase().startsWith('expand');
-                // Filter for buttons that are part of currently visible sections/entries
                 const visibleControllableButtonsOnClick = collapsibleButtons.filter(btn => {
                     const parentSection = btn.closest('section');
                     const parentEntry = btn.closest('.entry > div');
@@ -91,16 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleControllableButtonsOnClick.forEach(btn => {
                     const isCurrentlyExpanded = btn.classList.contains('active');
                     if ((shouldExpand && !isCurrentlyExpanded) || (!shouldExpand && isCurrentlyExpanded)) {
-                        btn.click(); // This will also trigger postToggleCallback if one was set by setupCollapsible
+                        btn.click();
                     }
                 });
-                // The text might have already been updated by the last btn.click() if callbacks are fast.
-                // But an explicit update here ensures consistency after all actions.
                 updateToggleAllButtonText(toggleButton, collapsibleButtons);
             });
         } else {
             if (toggleButton) {
-                updateToggleAllButtonText(toggleButton, []); // Handle case with no collapsibles
+                updateToggleAllButtonText(toggleButton, []);
             }
         }
     }
@@ -109,13 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function setupIndexPageLogic() {
         const pageElement = document.getElementById('page-bio');
         if (!pageElement) return;
-        const toggleAllBioBtn = pageElement.querySelector('#toggle-all'); // Assuming '#toggle-all' is the ID on Bio page
+        const toggleAllBioBtn = pageElement.querySelector('#toggle-all');
         const pageCollapsibles = Array.from(pageElement.querySelectorAll('.entry .collapsible'));
 
-        // MODIFIED: Add callback to update global button text
         pageCollapsibles.forEach(btn => {
             setupCollapsible(btn, () => {
-                if (toggleAllBioBtn) { // Check if the global button exists
+                if (toggleAllBioBtn) {
                     updateToggleAllButtonText(toggleAllBioBtn, pageCollapsibles);
                 }
             });
@@ -132,8 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!pageElement) return;
 
         const yearSectionCollapsibles = Array.from(pageElement.querySelectorAll('.entry > section > .collapsible'));
-        const toggleAllArticlesBtn = pageElement.querySelector('#toggle-all'); // Assuming '#toggle-all' is the ID
-        // ... (rest of your Articles page variables from your original script) ...
+        const toggleAllArticlesBtn = pageElement.querySelector('#toggle-all');
         const langFilterButtons = pageElement.querySelectorAll('.language-filter-controls button[data-filter-lang]');
         const statusFilterButtons = pageElement.querySelectorAll('.status-filter-controls button[data-filter-status]');
         const allArticleItemsContainer = pageElement.querySelector('.entry');
@@ -259,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let currentDisplayNumber = 1; for (let i = allVisibleItems.length - 1; i >= 0; i--) { const itemData = allVisibleItems[i]; if (!itemData || !itemData.span) continue; const displayNumber = currentDisplayNumber; const originalText = itemData.originalNumber; let suffix = ''; const match = originalText.match(/[a-zA-Z]+(?=\.$)/); if (match) { suffix = match[0]; } itemData.span.textContent = displayNumber + suffix + "."; itemData.span.style.visibility = 'visible'; currentDisplayNumber++; }
         }
 
-
         function filterAndToggleYearSections() {
             if (potentialItems.length === 0 && yearSectionCollapsibles.length > 0) {
                 yearSectionCollapsibles.forEach(button => { const sectionContainer = button.closest('section'); if (sectionContainer) sectionContainer.style.display = 'none'; });
@@ -322,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function () {
             renumberVisibleArticles();
             injectRelatedArticleLinks();
 
-            // Update button text based on currently controllable collapsibles after filtering
             if (toggleAllArticlesBtn) {
                 updateToggleAllButtonText(toggleAllArticlesBtn, controllableCollapsiblesForToggleAll);
             }
@@ -351,26 +338,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // MODIFIED: Add callback for individual year section toggles
         yearSectionCollapsibles.forEach(btn => {
             setupCollapsible(btn, () => {
                 if (toggleAllArticlesBtn) {
-                    // When an individual year section is toggled, its content visibility changes,
-                    // but the section itself (and thus its button) usually remains "controllable"
-                    // unless a filter hides the entire section.
-                    // The `filterAndToggleYearSections` function is the most robust way to get the
-                    // current list of *truly* controllable buttons after any potential filtering.
-                    // However, calling it fully might be overkill if it redoes too much.
-                    // The generic updateToggleAllButtonText will re-filter for visibility anyway.
-                    // We pass the original full list of yearSectionCollapsibles, and
-                    // updateToggleAllButtonText will correctly determine visible ones.
                     updateToggleAllButtonText(toggleAllArticlesBtn, yearSectionCollapsibles);
                 }
             });
         });
 
         if (toggleAllArticlesBtn) {
-            // setupToggleAllButton will use the modified updateToggleAllButtonText
             setupToggleAllButton(toggleAllArticlesBtn, yearSectionCollapsibles);
         }
 
@@ -403,9 +379,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
-        filterAndToggleYearSections(); // Initial setup and filtering
+        filterAndToggleYearSections();
     } // --- End of setupArticlesPageLogic ---
 
+    // =====================================================================================
+    // START OF RELEVANT setupBooksPageLogic
+    // =====================================================================================
     function setupBooksPageLogic() {
         const pageElement = document.getElementById('page-books');
         if (!pageElement) return;
@@ -478,12 +457,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        function updateToggleDetailsButtonText() { // This is the "majority need" version for Books page
+        // --- Details Button Logic for Books Page ---
+        // MODIFIED to include "all" in the text
+        function updateToggleDetailsButtonText() {
             if (!toggleDetailsBtn) return;
             const relevantDetailBtns = getRelevantDetailsCollapsibleBtns();
 
             if (relevantDetailBtns.length === 0) {
-                toggleDetailsBtn.textContent = 'Expand';
+                toggleDetailsBtn.textContent = 'Expand all'; // Changed
                 return;
             }
 
@@ -491,9 +472,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const numExpanded = relevantDetailBtns.filter(btn => btn.classList.contains('active')).length;
 
             if (numExpanded > numRelevant / 2) {
-                toggleDetailsBtn.textContent = 'Collapse';
+                toggleDetailsBtn.textContent = 'Collapse all'; // Changed
             } else {
-                toggleDetailsBtn.textContent = 'Expand';
+                toggleDetailsBtn.textContent = 'Expand all'; // Changed
             }
         }
 
@@ -502,7 +483,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const relevantDetailBtns = getRelevantDetailsCollapsibleBtns();
                 if (relevantDetailBtns.length === 0) return;
 
-                const shouldExpand = toggleDetailsBtn.textContent === 'Expand';
+                // Action determined by whether the text starts with "Expand"
+                const shouldExpand = toggleDetailsBtn.textContent.toLowerCase().startsWith('expand');
                 relevantDetailBtns.forEach(btn => {
                     const isCurrentlyExpanded = btn.classList.contains('active');
                     if ((shouldExpand && !isCurrentlyExpanded) || (!shouldExpand && isCurrentlyExpanded)) {
@@ -573,11 +555,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             numberVisibleBookEntries();
             updateToggleCoversButtonText();
-            updateToggleDetailsButtonText(); // This will use the "majority need" text logic for Books page
+            updateToggleDetailsButtonText();
         }
 
         detailsCollapsibleBtns.forEach(btn => {
-            setupCollapsible(btn, updateToggleDetailsButtonText); // For Books page details, specific text update
+            setupCollapsible(btn, updateToggleDetailsButtonText);
         });
 
         imageContainers.forEach(container => {
@@ -586,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function () {
         allCoversAreGloballyShown = false;
 
         updateToggleCoversButtonText();
-        updateToggleDetailsButtonText(); // Initial text for Books page details button
+        updateToggleDetailsButtonText();
 
         pageElement.querySelectorAll('.book-cover-placeholder img').forEach(img => {
             img.onerror = function() {
@@ -617,6 +599,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filterBooksByType();
     }
     // --- End of setupBooksPageLogic ---
+    // =====================================================================================
 
     // --- Setup for Projects Page ---
     function setupProjectsPageLogic() {
@@ -624,10 +607,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const toggleAllProjectsBtn = pageElement.querySelector('#toggle-all-projects');
         const pageCollapsibles = Array.from(pageElement.querySelectorAll('.entry .collapsible'));
 
-        // MODIFIED: Add callback to update global button text
         pageCollapsibles.forEach(btn => {
             setupCollapsible(btn, () => {
-                if (toggleAllProjectsBtn) { // Check if the global button exists
+                if (toggleAllProjectsBtn) {
                     updateToggleAllButtonText(toggleAllProjectsBtn, pageCollapsibles);
                 }
             });
@@ -636,10 +618,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (toggleAllProjectsBtn) {
             if (pageCollapsibles.length > 0) {
                 toggleAllProjectsBtn.style.display = '';
-                // setupToggleAllButton will now use the modified updateToggleAllButtonText
                 setupToggleAllButton(toggleAllProjectsBtn, pageCollapsibles);
             } else {
-                 if (typeof updateToggleAllButtonText === 'function') { // Should always be true here
+                 if (typeof updateToggleAllButtonText === 'function') {
                     updateToggleAllButtonText(toggleAllProjectsBtn, []);
                  }
                  toggleAllProjectsBtn.style.display = 'none';
@@ -655,7 +636,6 @@ document.addEventListener('DOMContentLoaded', function () {
     else if (pageId === 'page-books') { setupBooksPageLogic(); }
     else if (pageId === 'page-projects') { setupProjectsPageLogic(); }
     else {
-        // For any other pages, setup collapsibles without a global callback
         document.querySelectorAll('.collapsible').forEach(btn => setupCollapsible(btn));
     }
 });
