@@ -1024,6 +1024,12 @@ a.related-link:focus {
     color: var(--text-muted);
 }
 
+#page-projects .ongoing-project-entry + .ongoing-project-entry {
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--border-color-light);
+}
+
 /* Styling for the conference line font size */
 #page-projects .ongoing-project-entry .conference-info { /* MODIFIED: Merged with new styles */
     font-size: 0.95em; /* Match Yerevan uni line font size */
@@ -1059,5 +1065,43 @@ a.related-link:focus {
 
 #page-projects .ongoing-project-entry .conference-description p {
     margin-bottom: 0; /* Ensures the paragraph inside the description doesn't add extra bottom margin */
+}
+
+/* Conference list layout (no descriptions) */
+#page-projects .ongoing-project-entry .conference-announcements {
+  margin-top: 1.2em;
+}
+
+#page-projects .ongoing-project-entry .conference-announcement + .conference-announcement {
+  margin-top: 1.2em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--border-color-light);
+}
+
+#page-projects .ongoing-project-entry .conference-announcement {
+  padding: 0.6em 0.8em;
+  background: var(--bg-filter-button);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-inner);
+}
+
+/* Highlight upcoming / current conference */
+#page-projects .ongoing-project-entry .conference-announcement.highlighted-conference {
+  background-color: #FFEE99; /* same as highlighted articles */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid var(--border-color-light);
+}
+
+#page-projects .ongoing-project-entry .cfp-deadline {
+  display: block;
+  margin-top: 0.4em;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+/* Ensure section headers on Projects page align flush */
+#page-projects .section-group-header {
+  margin-left: 0;
+  margin-right: 0;
 }
 /* --- End of Projects Page Specific Styling --- */
