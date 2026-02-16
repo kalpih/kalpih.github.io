@@ -399,6 +399,48 @@ document.addEventListener('DOMContentLoaded', function () {
         const filterButtons = pageElement.querySelectorAll('.book-type-filter-controls button[data-filter-type]');
         let currentBookTypeFilter = 'all';
 
+function setupIndexCarousels(rootEl) {
+  const carousels = Array.from(rootEl.querySelectorAll('.index-carousel'));
+
+  carousels.forEach(carousel => {
+    if (carousel.dataset.carouselInit === '1') return;
+    carousel.dataset.carouselInit = '1';
+
+    const track = carousel.querySelector('.index-track');
+    const prev  = carousel.querySelector('.index-arrow-left');
+    const next  = carousel.querySelector('.index-arrow-right');
+    if (!track || !prev || !next) return;
+
+    const update = () => {
+      const max = Math.max(0, track.scrollWidth - track.clientWidth);
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= (max - 1);
+    };
+
+    const scrollOne = (dir) => {
+      const step = track.clientWidth || track.getBoundingClientRect().width;
+      if (!step) return;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+      window.setTimeout(update, 200);
+    };
+
+    prev.addEventListener('click', (e) => { e.preventDefault(); scrollOne(-1); });
+    next.addEventListener('click', (e) => { e.preventDefault(); scrollOne(1); });
+    track.addEventListener('scroll', update, { passive: true });
+
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); scrollOne(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollOne(1); }
+    });
+
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(update).observe(track);
+    }
+
+    update();
+  });
+}
+
         allBookEntries.forEach(entry => {
             const numberSpan = entry.querySelector('.book-reference-text .entry-number');
             if (numberSpan && numberSpan.textContent) {
@@ -452,6 +494,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 relevantContainers.forEach(container => {
                     container.style.display = allCoversAreGloballyShown ? 'block' : 'none';
                 });
+
+        if (allCoversAreGloballyShown) setupIndexCarousels(pageElement);
                 toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
                 toggleCoversBtn.blur();
             });
@@ -492,6 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
                 updateToggleDetailsButtonText();
+                setupIndexCarousels(pageElement);
                 toggleDetailsBtn.blur();
             });
         }
