@@ -399,6 +399,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const filterButtons = pageElement.querySelectorAll('.book-type-filter-controls button[data-filter-type]');
         let currentBookTypeFilter = 'all';
 
+// --- Covers can live inside details boxes (e.g., Translations). If so, Show Covers must open the parent box. ---
+const autoOpenedDetailsBoxIds = new Set();
+
+function openParentDetailsBoxIfNeeded(container) {
+    const detailsBox = container.closest('.book-details-box.collapsible-content');
+    if (!detailsBox) return;
+
+    const controllerBtn = pageElement.querySelector(
+        `.short_resume_content > button.collapsible[aria-controls="${detailsBox.id}"]`
+    );
+    if (!controllerBtn) return;
+
+    // Only auto-open if currently closed
+    if (controllerBtn.getAttribute('aria-expanded') !== 'true') {
+        controllerBtn.click(); // uses your setupCollapsible logic + keeps classes/aria consistent
+        autoOpenedDetailsBoxIds.add(detailsBox.id);
+    }
+}
+
 function setupTOCCarousels(rootEl) {
   const carousels = Array.from(rootEl.querySelectorAll('.toc-carousel'));
 
@@ -474,8 +493,16 @@ function getRelevantDetailsCollapsibleBtns() {
 
 function syncCoverVisibilityToCurrentFilter() {
     const relevantContainers = getRelevantImageContainers();
+
     relevantContainers.forEach(container => {
-        container.style.display = allCoversAreGloballyShown ? 'block' : 'none';
+        if (allCoversAreGloballyShown) {
+            // KEY: if this cover container lives inside a details box (Translations/Reviews),
+            // that box must be opened or you will never see the images.
+            openParentDetailsBoxIfNeeded(container);
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
     });
 
     if (allCoversAreGloballyShown) setupTOCCarousels(pageElement);
@@ -483,30 +510,30 @@ function syncCoverVisibilityToCurrentFilter() {
 
 let allCoversAreGloballyShown = false;
 
-        function updateToggleCoversButtonText() {
-            if (!toggleCoversBtn) return;
-            const relevantContainers = getRelevantImageContainers();
-            if (relevantContainers.length === 0) {
-                toggleCoversBtn.textContent = 'Show Covers';
-                return;
-            }
-            const allCurrentlyShown = relevantContainers.every(container => container.style.display === 'block');
-            allCoversAreGloballyShown = allCurrentlyShown;
-            toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
-        }
+function updateToggleCoversButtonText() {
+    if (!toggleCoversBtn) return;
 
-        if (toggleCoversBtn) {
-            toggleCoversBtn.addEventListener('click', () => {
-                allCoversAreGloballyShown = !allCoversAreGloballyShown;
-                const relevantContainers = getRelevantImageContainers();
-                relevantContainers.forEach(container => {
-                    container.style.display = allCoversAreGloballyShown ? 'block' : 'none';
-                });
-        if (allCoversAreGloballyShown) setupTOCCarousels(pageElement);
-                toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
-                toggleCoversBtn.blur();
-            });
-        }
+    const relevantContainers = getRelevantImageContainers();
+    if (relevantContainers.length === 0) {
+        // Do NOT change the global flag here; just reflect no covers for this filter.
+        toggleCoversBtn.textContent = 'Show Covers';
+        return;
+    }
+
+    // Button text reflects the GLOBAL state, not whatever happens to be currently visible.
+    toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
+}
+
+if (toggleCoversBtn) {
+    toggleCoversBtn.addEventListener('click', () => {
+        allCoversAreGloballyShown = !allCoversAreGloballyShown;
+
+        syncCoverVisibilityToCurrentFilter();
+        updateToggleCoversButtonText();
+
+        toggleCoversBtn.blur();
+    });
+}
 
         // --- Details Button Logic for Books Page ---
         // MODIFIED to include "all" in the text
