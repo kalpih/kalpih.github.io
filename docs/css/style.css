@@ -762,8 +762,8 @@ button.collapsible.project-button::after {
 .book-cover-placeholder img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius-inner); }
 .book-cover-placeholder a { display: block; width: 100%; height: 100%; }
 
-/* --- Index carousel (inside book-cover-placeholder) --- */
-.book-cover-placeholder.index-carousel{
+/* --- TOC carousel (inside book-cover-placeholder) --- */
+.book-cover-placeholder.toc-carousel{
   display: block;         /* override flex row from .book-cover-placeholder */
   position: relative;
   overflow: hidden;
@@ -771,7 +771,7 @@ button.collapsible.project-button::after {
 }
 
 /* Make the track a horizontal strip */
-.book-cover-placeholder.index-carousel .index-track{
+.book-cover-placeholder.toc-carousel .toc-track{
   display: flex;
   width: 100%;
   height: 100%;
@@ -781,30 +781,30 @@ button.collapsible.project-button::after {
 }
 
 /* Hide scrollbar (still scrollable) */
-.book-cover-placeholder.index-carousel .index-track{
+.book-cover-placeholder.toc-carousel .toc-track{
   -ms-overflow-style: none;  /* IE/old Edge */
   scrollbar-width: none;     /* Firefox */
 }
-.book-cover-placeholder.index-carousel .index-track::-webkit-scrollbar{
+.book-cover-placeholder.toc-carousel .toc-track::-webkit-scrollbar{
   display: none;             /* Chrome/Safari */
 }
 
 /* One slide per view */
-.book-cover-placeholder.index-carousel .index-slide{
+.book-cover-placeholder.toc-carousel .toc-slide{
   flex: 0 0 100%;
   height: 100%;
   scroll-snap-align: start;
 }
 
 /* Ensure images fill the box */
-.book-cover-placeholder.index-carousel .index-slide img{
+.book-cover-placeholder.toc-carousel .toc-slide img{
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 /* Put arrows on top of the images */
-.book-cover-placeholder.index-carousel .index-arrow{
+.book-cover-placeholder.toc-carousel .toc-arrow{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -816,8 +816,8 @@ button.collapsible.project-button::after {
   cursor: pointer;
 }
 
-.book-cover-placeholder.index-carousel .index-arrow-left{ left: 0.3em; }
-.book-cover-placeholder.index-carousel .index-arrow-right{ right: 0.3em; }
+.book-cover-placeholder.toc-carousel .toc-arrow-left{ left: 0.3em; }
+.book-cover-placeholder.toc-carousel .toc-arrow-right{ right: 0.3em; }
 .book-cover-placeholder .error-text { padding: 0.36rem; font-size: 0.9em; }
 
 .year-overlay {

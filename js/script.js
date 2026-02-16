@@ -399,16 +399,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const filterButtons = pageElement.querySelectorAll('.book-type-filter-controls button[data-filter-type]');
         let currentBookTypeFilter = 'all';
 
-function setupIndexCarousels(rootEl) {
-  const carousels = Array.from(rootEl.querySelectorAll('.index-carousel'));
+function setupTOCCarousels(rootEl) {
+  const carousels = Array.from(rootEl.querySelectorAll('.toc-carousel'));
 
   carousels.forEach(carousel => {
     if (carousel.dataset.carouselInit === '1') return;
     carousel.dataset.carouselInit = '1';
 
-    const track = carousel.querySelector('.index-track');
-    const prev  = carousel.querySelector('.index-arrow-left');
-    const next  = carousel.querySelector('.index-arrow-right');
+    const track = carousel.querySelector('.toc-track');
+    const prev  = carousel.querySelector('.toc-arrow-left');
+    const next  = carousel.querySelector('.toc-arrow-right');
     if (!track || !prev || !next) return;
 
     const update = () => {
@@ -464,15 +464,24 @@ function setupIndexCarousels(rootEl) {
             });
         }
 
-        function getRelevantDetailsCollapsibleBtns() {
-            const visibleEntries = getVisibleBookEntries();
-            return detailsCollapsibleBtns.filter(btn => {
-                const parentEntry = btn.closest('.book-entry');
-                return parentEntry && visibleEntries.includes(parentEntry);
-            });
-        }
+function getRelevantDetailsCollapsibleBtns() {
+    const visibleEntries = getVisibleBookEntries();
+    return detailsCollapsibleBtns.filter(btn => {
+        const parentEntry = btn.closest('.book-entry');
+        return parentEntry && visibleEntries.includes(parentEntry);
+    });
+}
 
-        let allCoversAreGloballyShown = false;
+function syncCoverVisibilityToCurrentFilter() {
+    const relevantContainers = getRelevantImageContainers();
+    relevantContainers.forEach(container => {
+        container.style.display = allCoversAreGloballyShown ? 'block' : 'none';
+    });
+
+    if (allCoversAreGloballyShown) setupTOCCarousels(pageElement);
+}
+
+let allCoversAreGloballyShown = false;
 
         function updateToggleCoversButtonText() {
             if (!toggleCoversBtn) return;
@@ -493,7 +502,7 @@ function setupIndexCarousels(rootEl) {
                 relevantContainers.forEach(container => {
                     container.style.display = allCoversAreGloballyShown ? 'block' : 'none';
                 });
-        if (allCoversAreGloballyShown) setupIndexCarousels(pageElement);
+        if (allCoversAreGloballyShown) setupTOCCarousels(pageElement);
                 toggleCoversBtn.textContent = allCoversAreGloballyShown ? 'Hide Covers' : 'Show Covers';
                 toggleCoversBtn.blur();
             });
@@ -534,7 +543,7 @@ function setupIndexCarousels(rootEl) {
                     }
                 });
                 updateToggleDetailsButtonText();
-                setupIndexCarousels(pageElement);
+                setupTOCCarousels(pageElement);
                 toggleDetailsBtn.blur();
             });
         }
@@ -597,6 +606,7 @@ function setupIndexCarousels(rootEl) {
                 entry.style.display = typeMatch ? '' : 'none';
             });
             numberVisibleBookEntries();
+            syncCoverVisibilityToCurrentFilter();
             updateToggleCoversButtonText();
             updateToggleDetailsButtonText();
         }
