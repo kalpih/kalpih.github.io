@@ -687,6 +687,30 @@ button.collapsible.project-button::after {
     margin-bottom: 0;
 }
 
+/* --- Translation-box cover alignment override (place AFTER generic #page-books .image-collapsible-content) --- */
+#page-books .book-details-box.collapsible-content[id^="target-translations-"] .image-collapsible-content {
+    /* Manual knobs */
+    --tx-cover-nudge-left: 0px;    /* + moves right, - moves left */
+    --tx-cover-nudge-right: 10px;   /* + pulls right edge inward, - pushes it outward */
+
+    /* Left: cancel the LI's 2.2em left padding */
+    margin-left: calc(-2.2em + var(--tx-cover-nudge-left));
+
+    /*
+      Right: cancel the details-box right padding (1.2em) and match the normal cover's 0.71rem.
+      This makes the translation covers line up with the other cover blocks on the page.
+    */
+    margin-right: calc((-1.2em + 0.71rem) - var(--tx-cover-nudge-right));
+
+    border-left: none;
+    padding-left: 0;
+    padding-right: 0;
+
+    margin-top: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
 .collapsible-content.sub-content {
   padding-left: var(--collapsible-content-inner-padding-left); 
   margin-left: var(--collapsible-line-margin-left); 
@@ -865,6 +889,39 @@ button.collapsible.project-button::after {
     padding-left: 2.2em; 
     margin-bottom: var(--inter-article-top-margin); 
 }
+
+/* =========================================================
+   Books page: translation entries that contain an inline cover grid
+   MUST keep the left padding for the generated number, but the
+   cover block itself should align flush.
+   ========================================================= */
+
+/* 1) Hard-ensure the translation LI keeps room for the number */
+#page-books .book-details-box.collapsible-content[id^="target-translations-"] ul > li {
+    padding-left: 2.2em; /* keep space for .entry-number */
+}
+
+/* Optional safety: keep the number above any inline content */
+#page-books .book-details-box.collapsible-content[id^="target-translations-"] ul > li > .entry-number {
+    z-index: 2;
+}
+
+/* 2) Pull ONLY the image block left, cancelling the LI padding */
+#page-books .book-details-box.collapsible-content[id^="target-translations-"] .image-collapsible-content {
+    /* cancel the li’s padding-left (so covers align) */
+    margin-left: -1.9em;
+
+    /* do NOT inherit the outer cover gutter/line styling */
+    border-left: none;
+    padding-left: 0;
+    padding-right: -6em;
+
+    /* keep vertical rhythm similar to other cover blocks */
+    margin-top: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
 .book-details-box.collapsible-content ul li:last-child {
     margin-bottom: 0;
 }
