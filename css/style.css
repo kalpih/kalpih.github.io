@@ -895,10 +895,6 @@ button.collapsible.project-button::after {
   color: var(--text-light);
   border: none;
   border-radius: 4px;
-
-  padding: 0.5em 0.7em;
-
-  border-radius: 
   padding: 0.5em 0.7em;
 
   font-size: 0.9em;
@@ -1159,15 +1155,44 @@ a.related-link:focus {
     box-shadow: 0 0 3px rgba(0,0,0,0.1);
 }
 
-#page-articles .entry li:not(.secondary-entry).highlighted-article {
-    background-color: #FFEE99; 
-    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+/* Articles: highlight overlay behind content (no layout shift, does not affect absolute number span) */
+#page-articles .entry li.highlighted-article{
+    position: relative;
+    z-index: 0;        /* creates stacking context */
+    box-shadow: none;
 }
-#page-articles .entry li.secondary-entry.highlighted-article {
-    background-color: #FFEE99; 
-    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+
+/* overlay is behind ALL content, including text nodes */
+#page-articles .entry li.highlighted-article::before{
+    content: "";
+    position: absolute;
+    pointer-events: none;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-color: #FFEE99;
+    border-radius: var(--border-radius-inner);
+
+    animation: articleHighlightFade 1.8s ease-out forwards;
+    z-index: -1;       /* key: behind everything */
+}
+
+/* Non-secondary items: expand highlight on all sides to match the grey-box footprint */
+#page-articles .entry li:not(.secondary-entry).highlighted-article::before{
+    top: -0.3em;
+    bottom: -0.3em;
+    left: var(--secondary-entry-margin-left);  /* negative => extends left */
+    right: -0.8em;                             /* extends right */
+    border-radius: var(--border-radius-inner);
+}
+
+@keyframes articleHighlightFade{
+  0%   { opacity: 1; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* --- Projects Page Specific Styling --- */

@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             document.querySelectorAll('li.highlighted-article').forEach(el => el.classList.remove('highlighted-article'));
             targetElement.classList.add('highlighted-article');
-            setTimeout(() => { targetElement.classList.remove('highlighted-article'); }, 2500);
+            setTimeout(() => { targetElement.classList.remove('highlighted-article'); }, 1800);
         }
 
         function resetFiltersIfNeeded(actionCallback) {
