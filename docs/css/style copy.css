@@ -425,32 +425,6 @@ button:focus-visible { outline: 2px solid var(--primary-darker); outline-offset:
   border-radius: var(--border-radius-collapsible) var(--border-radius-collapsible) 0 0;
   line-height: 1.3;
 }
-
-/* Articles: small corner tag with NEW text */
-#page-articles .latest-section-box .static-box-header{
-  position: relative;
-}
-
-#page-articles .latest-section-box .static-box-header::after{
-  content: "NEW";
-  position: absolute;
-  top: 0.35rem;
-  right: 0.5rem;
-
-  font-family: var(--font-family-ui-headings);
-  font-size: 0.7em;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1;
-
-  background-color: #FFEE99;
-  color: var(--text-light);
-
-  border-radius: 4px;
-  padding: 0.5em 0.7em;
-}
-
-
 .static-box-content {
   background-color: var(--bg-details-box); border: 1px solid var(--border-details-box);
   border-top: none; padding: 1.4em 1.4em;
@@ -883,32 +857,6 @@ button.collapsible.project-button::after {
     letter-spacing: normal;
     pointer-events: none;
 }
-
-#page-books .book-cover-placeholder .new-overlay{
-  font-family: var(--font-family-ui-headings);
-  position: absolute;
-  top: 0.35em;
-  left: 0.35em;
-  z-index: 2;
-
-  background-color: #FFEE99;
-  color: var(--text-light);
-  border: none;
-  border-radius: 4px;
-
-  padding: 0.5em 0.7em;
-
-  border-radius: 
-  padding: 0.5em 0.7em;
-
-  font-size: 0.9em;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1;
-
-  pointer-events: none;
-}
-
 .book-cover-placeholder a .year-overlay { display: none; }
 .book-reference-text em { font-style: italic; }
 
@@ -1253,8 +1201,8 @@ a.related-link:focus {
 /* Highlight upcoming / current conference */
 #page-projects .ongoing-project-entry .conference-announcement.highlighted-conference {
   background-color: #FFEE99; /* same as highlighted articles */
-  box-shadow: none;
-  border: 1px solid var(--border-color-light); /* lighter than border-color-light */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid var(--border-color-light);
 }
 
 #page-projects .ongoing-project-entry .cfp-deadline {

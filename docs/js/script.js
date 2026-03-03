@@ -642,13 +642,11 @@ if (toggleCoversBtn) {
             setupCollapsible(btn, updateToggleDetailsButtonText);
         });
 
-        imageContainers.forEach(container => {
-            container.style.display = 'none';
-        });
-        allCoversAreGloballyShown = false;
-
+        allCoversAreGloballyShown = true;
+        syncCoverVisibilityToCurrentFilter();
         updateToggleCoversButtonText();
         updateToggleDetailsButtonText();
+        setupTOCCarousels(pageElement);
 
         pageElement.querySelectorAll('.book-cover-placeholder img').forEach(img => {
             img.onerror = function() {
